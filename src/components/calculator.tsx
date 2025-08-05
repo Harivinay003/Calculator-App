@@ -18,6 +18,7 @@ export function Calculator() {
   const [firstOperand, setFirstOperand] = useState<number | null>(null);
   const [operator, setOperator] = useState<string | null>(null);
   const [waitingForSecondOperand, setWaitingForSecondOperand] = useState(false);
+  const [equation, setEquation] = useState('');
 
   const inputDigit = (digit: string) => {
     if (waitingForSecondOperand) {
@@ -44,6 +45,7 @@ export function Calculator() {
 
     if (operator && waitingForSecondOperand) {
       setOperator(nextOperator);
+      setEquation((prev) => prev.slice(0, -1) + nextOperator);
       return;
     }
 
@@ -55,6 +57,7 @@ export function Calculator() {
         setFirstOperand(null);
         setOperator(null);
         setWaitingForSecondOperand(true);
+        setEquation('');
         return;
       }
       const result = performCalculation[operator](firstOperand, inputValue);
@@ -63,7 +66,8 @@ export function Calculator() {
       setDisplayValue(resultString);
       setFirstOperand(result);
     }
-
+    
+    setEquation(displayValue + ' ' + nextOperator);
     setWaitingForSecondOperand(true);
     setOperator(nextOperator);
   };
@@ -77,12 +81,14 @@ export function Calculator() {
       setFirstOperand(null);
       setOperator(null);
       setWaitingForSecondOperand(true);
+      setEquation('');
       return;
     }
     
     const result = performCalculation[operator](firstOperand, secondOperand);
     const resultString = String(parseFloat(result.toPrecision(12)));
     
+    setEquation((prev) => prev + ' ' + displayValue + ' =');
     setDisplayValue(resultString);
     setFirstOperand(null);
     setOperator(null);
@@ -94,6 +100,7 @@ export function Calculator() {
     setFirstOperand(null);
     setOperator(null);
     setWaitingForSecondOperand(false);
+    setEquation('');
   };
 
   const handleDelete = () => {
@@ -112,6 +119,9 @@ export function Calculator() {
       </CardHeader>
       <CardContent className="p-4 pt-0">
         <div className="bg-muted/80 text-right rounded-xl p-4 mb-4 overflow-hidden">
+          <p className="text-2xl font-mono text-muted-foreground h-8 break-all" style={{ wordBreak: 'break-word' }}>
+            {equation}
+          </p>
           <p className="text-5xl font-mono text-foreground break-all" style={{ wordBreak: 'break-word' }}>
             {displayValue}
           </p>
