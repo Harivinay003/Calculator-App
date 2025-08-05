@@ -45,7 +45,7 @@ export function Calculator() {
 
     if (operator && waitingForSecondOperand) {
       setOperator(nextOperator);
-      setEquation((prev) => prev.slice(0, -1) + nextOperator);
+      setEquation((prev) => prev.slice(0, -2) + ` ${nextOperator} `);
       return;
     }
 
@@ -67,7 +67,7 @@ export function Calculator() {
       setFirstOperand(result);
     }
     
-    setEquation(displayValue + ' ' + nextOperator);
+    setEquation(displayValue + ` ${nextOperator} `);
     setWaitingForSecondOperand(true);
     setOperator(nextOperator);
   };
@@ -88,7 +88,7 @@ export function Calculator() {
     const result = performCalculation[operator](firstOperand, secondOperand);
     const resultString = String(parseFloat(result.toPrecision(12)));
     
-    setEquation((prev) => prev + ' ' + displayValue + ' =');
+    setEquation((prev) => prev + displayValue + ' =');
     setDisplayValue(resultString);
     setFirstOperand(null);
     setOperator(null);
@@ -109,26 +109,28 @@ export function Calculator() {
   };
 
   const buttonClass = 'h-16 text-2xl rounded-xl shadow-md active:shadow-inner focus-visible:ring-offset-0 focus-visible:ring-2';
-  const numberButtonClass = 'bg-card hover:bg-muted dark:bg-secondary dark:hover:bg-accent/50';
+  const numberButtonClass = 'bg-card hover:bg-muted dark:bg-secondary dark:hover:bg-accent/50 text-foreground';
   const opButtonClass = 'bg-accent/80 hover:bg-accent text-accent-foreground';
+  const specialButtonClass = 'bg-muted hover:bg-muted/70 text-foreground';
+
 
   return (
-    <Card className="w-full max-w-xs mx-auto shadow-2xl rounded-3xl bg-card/60 backdrop-blur-sm border-2">
+    <Card className="w-full max-w-xs mx-auto shadow-2xl rounded-3xl bg-card/60 backdrop-blur-sm border-2 border-white/20">
       <CardHeader>
-        <CardTitle className="text-center text-xl font-light text-muted-foreground">SimpleCalc</CardTitle>
+        <CardTitle className="text-center text-xl font-light text-muted-foreground tracking-widest">CALC</CardTitle>
       </CardHeader>
       <CardContent className="p-4 pt-0">
-        <div className="bg-muted/80 text-right rounded-xl p-4 mb-4 overflow-hidden">
-          <p className="text-2xl font-mono text-muted-foreground h-8 break-all" style={{ wordBreak: 'break-word' }}>
-            {equation}
+        <div className="bg-black/20 text-right rounded-xl p-4 mb-4 overflow-hidden shadow-inner">
+          <p className="text-xl font-mono text-muted-foreground h-7 break-all" style={{ wordBreak: 'break-word' }}>
+            {equation || ' '}
           </p>
           <p className="text-5xl font-mono text-foreground break-all" style={{ wordBreak: 'break-word' }}>
             {displayValue}
           </p>
         </div>
         <div className="grid grid-cols-4 gap-2">
-          <Button onClick={clearAll} className={cn(buttonClass, 'col-span-2 bg-muted hover:bg-muted/70')}>AC</Button>
-          <Button onClick={handleDelete} className={cn(buttonClass, 'bg-muted hover:bg-muted/70')}><Delete size={24} /></Button>
+          <Button onClick={clearAll} className={cn(buttonClass, 'col-span-2', specialButtonClass)}>AC</Button>
+          <Button onClick={handleDelete} className={cn(buttonClass, specialButtonClass)}><Delete size={24} /></Button>
           <Button onClick={() => handleOperator('/')} className={cn(buttonClass, opButtonClass)}><Divide size={24} /></Button>
 
           <Button onClick={() => inputDigit('7')} className={cn(buttonClass, numberButtonClass)}>7</Button>
@@ -148,7 +150,7 @@ export function Calculator() {
 
           <Button onClick={() => inputDigit('0')} className={cn(buttonClass, 'col-span-2', numberButtonClass)}>0</Button>
           <Button onClick={inputDecimal} className={cn(buttonClass, numberButtonClass)}>.</Button>
-          <Button onClick={handleEquals} className={cn(buttonClass, 'bg-primary hover:bg-primary/80')}><Equal size={24} /></Button>
+          <Button onClick={handleEquals} className={cn(buttonClass, 'bg-primary hover:bg-primary/80 text-primary-foreground')}><Equal size={24} /></Button>
         </div>
       </CardContent>
     </Card>
