@@ -51,6 +51,7 @@ export function Calculator() {
 
     if (firstOperand === null) {
       setFirstOperand(inputValue);
+      setEquation(displayValue + ` ${nextOperator} `);
     } else if (operator) {
       if (operator === '/' && inputValue === 0) {
         setDisplayValue('Error');
@@ -65,9 +66,11 @@ export function Calculator() {
 
       setDisplayValue(resultString);
       setFirstOperand(result);
+      setEquation(equation + displayValue + ` ${nextOperator} `);
+    } else {
+       setEquation(displayValue + ` ${nextOperator} `);
     }
     
-    setEquation(displayValue + ` ${nextOperator} `);
     setWaitingForSecondOperand(true);
     setOperator(nextOperator);
   };
@@ -103,6 +106,10 @@ export function Calculator() {
     setEquation('');
   };
 
+  const clearEntry = () => {
+    setDisplayValue('0');
+  }
+
   const handleDelete = () => {
     if (waitingForSecondOperand) return;
     setDisplayValue(displayValue.length > 1 ? displayValue.slice(0, -1) : '0');
@@ -129,7 +136,8 @@ export function Calculator() {
           </p>
         </div>
         <div className="grid grid-cols-4 gap-2">
-          <Button onClick={clearAll} className={cn(buttonClass, 'col-span-2', specialButtonClass)}>AC</Button>
+          <Button onClick={clearAll} className={cn(buttonClass, specialButtonClass)}>AC</Button>
+          <Button onClick={clearEntry} className={cn(buttonClass, specialButtonClass)}>C</Button>
           <Button onClick={handleDelete} className={cn(buttonClass, specialButtonClass)}><Delete size={24} /></Button>
           <Button onClick={() => handleOperator('/')} className={cn(buttonClass, opButtonClass)}><Divide size={24} /></Button>
 
